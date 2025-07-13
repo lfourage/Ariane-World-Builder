@@ -1,45 +1,55 @@
-# -Project-Name ( 🌐 version ) 
+## 📦 How to use (Project Setup)
 
-🔗 **Live Website**: [https://lfourage.github.io/-Project-Name/](https://lfourage.github.io/-Project-Name/)
+### ✅ Prerequisites
 
----
-## 🎯 Project Objective
+- [Docker](https://www.docker.com/) installed
 
-The goal of this project is to build a **Project page** as part of the **Project Context** on [exemple](https://www.exemple.org/).
+This project includes two setup scripts for easy local installation using Docker:
 
-> 💡 Inspired by:  
-[Project Page Demo](https://Project-demo.exemple.com/)  
-⚠️ *Do not copy the demo project.*
+### 🐧 For macOS/Linux/WSL users
 
----
+Run this in your terminal:
+```
+chmod +x ./scripts/setup.sh
+./scripts/setup.sh
+```
 
-## 📌 Project Requirements
+This will:
 
-- [x] Requirement
+    Check that Docker and Docker Compose are installed
 
----
+    Create a .env file if missing (with default DB connection and secret)
 
-## 🖼️ Project Context
+    Build and start the containers (docker compose up --build)
 
-This is one of the required projects to earn the **Project Context** from exemple.  
-Through this challenge, I learned how to:
+    Wait for the PostgreSQL database to be ready
 
--  Some Stuff
+    Generate the Prisma client and run the first migration
 
----
+### 🪟 For Windows users (PowerShell)
 
-## 👥 Contributors
+Run this in PowerShell (preferably as Administrator):
+```
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+.\scripts\setup.ps1
+```
 
-- [@lfourage](https://github.com/lfourage)
+    ⚠️ Note: By default, PowerShell blocks script execution (Restricted policy).
+    You must allow local scripts using Set-ExecutionPolicy RemoteSigned once.
 
----
+This will:
 
-## 📫 Contact
+    Check Docker and Docker Compose availability
 
-- GitHub: [@lfourage](https://github.com/lfourage)
-- FreeCodeCamp: [My Profile](https://www.exemple.org/lfourage)
-- Mail : [Email](ludogriph@gmail.com)
+    Generate the .env file if missing
 
----
+    Build and start the containers
 
-⭐ *Thanks for checking out this project! Feel free to leave a star if you found it helpful or inspiring.*
+    Run the Prisma migration
+
+### 🔄 Environment defaults (from .env)
+
+DATABASE_URL="postgresql://postgres:postgres@db:5432/mydb"
+NEXTAUTH_SECRET="my-super-secret"
+
+You can customize these values before running the script.

@@ -33,4 +33,14 @@ echo "🧬 Running Prisma setup..."
 docker compose exec app npx prisma generate
 docker compose exec app npx prisma migrate dev --name init
 
+until curl -s http://localhost:3000 >/dev/null; do
+    sleep 1
+done
+
 echo "🚀 App running at http://localhost:3000"
+
+if command -v open &>/dev/null; then
+    open http://localhost:3000
+else
+    xdg-open http://localhost:3000
+fi

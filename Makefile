@@ -11,12 +11,12 @@ else
   TEARDOWN_CMD := powershell -ExecutionPolicy Bypass -File .\scripts\teardown.ps1
 endif
 
-.PHONY: setup teardown reset help start stop
+.PHONY: setup clear reset help start logs stop
 
 setup:
 	$(SETUP_CMD)
 
-teardown:
+clear:
 	$(TEARDOWN_CMD)
 
 reset:
@@ -29,9 +29,13 @@ start:
 stop:
 	docker compose stop
 
+logs:
+	@docker compose logs -f
+
 help:
 	@echo "make setup     # Setup containers (build and run)"
-	@echo "make teardown  # Tear down containers (stop and remove)"
+	@echo "make clear     # Tear down containers (stop and remove)"
 	@echo "make reset     # Full reset (teardown + setup)"
 	@echo "make start     # Start stopped containers"
 	@echo "make stop      # Stop running containers"
+	@echo "make logs      # Listen for console logs"

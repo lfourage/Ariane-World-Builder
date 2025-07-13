@@ -11,7 +11,7 @@ else
   TEARDOWN_CMD := powershell -ExecutionPolicy Bypass -File .\scripts\teardown.ps1
 endif
 
-.PHONY: setup clear reset help start logs stop
+.PHONY: setup clear reset start stop logs help
 
 setup:
 	$(SETUP_CMD)

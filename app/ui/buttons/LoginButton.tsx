@@ -1,4 +1,4 @@
-import { buttonDefault } from "@/app/lib/utils/tailwind-classnames";
+import { button } from "@/app/lib/ui/button";
 
 interface loginButtonProps {
     handleClick: () => void;
@@ -6,7 +6,7 @@ interface loginButtonProps {
 
 export const LoginButton = ({ handleClick }: loginButtonProps ) => {
 
-    return <button className={buttonDefault}
+    return <button className={button({ intent: "nature", size: "md" })}
     onClick={handleClick}>
         Log In
     </button>

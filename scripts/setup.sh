@@ -38,9 +38,3 @@ until curl -s http://localhost:3000 >/dev/null; do
 done
 
 echo "🚀 App running at http://localhost:3000"
-
-if command -v open &>/dev/null; then
-    open http://localhost:3000
-else
-    xdg-open http://localhost:3000
-fi

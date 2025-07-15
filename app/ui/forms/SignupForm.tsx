@@ -1,11 +1,12 @@
 import { button } from "@/app/lib/ui/button";
 import { input } from "@/app/lib/ui/input";
 
-interface signinFormProps {
+interface signupFormProps {
   handleClick: () => void;
 }
 
-export const SigninForm = ({ handleClick }: signinFormProps) => {
+export const SignupForm = ({ handleClick }: signupFormProps) => {
+
   return (
     <div
       className="fixed h-full w-full flex items-center justify-center backdrop-blur-sm bg-white/10 p-6"
@@ -40,6 +41,21 @@ export const SigninForm = ({ handleClick }: signinFormProps) => {
           <input
             type="password"
             id="password"
+            className={input()}
+            placeholder="••••••••"
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="confirm-password"
+            className="block text-sm text-emerald-700 mb-1"
+          >
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            id="confirm-password"
             className={input()}
             placeholder="••••••••"
           />

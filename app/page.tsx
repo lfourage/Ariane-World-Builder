@@ -1,28 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { SigninForm } from "@/app/ui/forms/SigninForm";
+import { SignupForm } from "@/app/ui/forms/SignupForm";
 import { LoginForm } from "@/app/ui/forms/LoginForm";
-import { SigninButton } from "@/app/ui/buttons/SigninButton";
+import { SignupButton } from "@/app/ui/buttons/SignupButton";
 import { LoginButton } from "@/app/ui/buttons/LoginButton";
 
 export default function Home() {
-  const [ signinFormToggle , setSigninFormToggle] = useState(false);
+  const [ signupFormToggle , setSignupFormToggle] = useState(false);
   const [ loginFormToggle , setLoginFormToggle] = useState(false);
 
   const toggleLoginForm = () => {
     setLoginFormToggle((prev) => !prev);
   }
 
-  const toggleSigninForm = () => {
-    setSigninFormToggle((prev) => !prev);
+  const toggleSignupForm = () => {
+    setSignupFormToggle((prev) => !prev);
   }
 
   return (
     <>
-      {signinFormToggle && <SigninForm handleClick={toggleSigninForm}/>}
+      {signupFormToggle && <SignupForm handleClick={toggleSignupForm}/>}
       {loginFormToggle && <LoginForm handleClick={toggleLoginForm}/>}
-      <SigninButton handleClick={toggleSigninForm} />
+      <SignupButton handleClick={toggleSignupForm} />
       <LoginButton handleClick={toggleLoginForm} />
     </>
   );

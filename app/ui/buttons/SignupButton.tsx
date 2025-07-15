@@ -1,13 +1,13 @@
 import { button } from "@/app/lib/ui/button";
 
-interface signinButtonProps {
+interface signupButtonProps {
     handleClick: () => void;
 }
 
-export const SigninButton = ({ handleClick }: signinButtonProps ) => {
+export const SignupButton = ({ handleClick }: signupButtonProps ) => {
 
     return <button className={button({ intent: "nature", size: "md" })}
     onClick={handleClick}>
-        Sign In
+        Sign Up
     </button>
 }

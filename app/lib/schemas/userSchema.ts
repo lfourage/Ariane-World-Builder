@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-export const userSchema = z.object({
+export const registerSchema = z.object({
   name: z.string().min(2).optional(),
-  email: z.email(),
+  email: z.string().email(),
   password: z.string().min(6),
   confirmPassword: z.string().min(6),
 }).refine((data) => data.password === data.confirmPassword, {

@@ -6,6 +6,7 @@ import { handlePrismaError } from "@/app/lib/utils/handlePrismaError";
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('API');
   if (req.method !== "POST")
     return res.status(400).json({ message: "Method not allowed" });
 

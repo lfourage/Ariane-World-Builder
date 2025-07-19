@@ -30,7 +30,7 @@ stop:
 	docker compose stop
 
 logs:
-	@docker compose logs -f
+	@docker compose logs -f app
 
 help:
 	@echo "make setup     # Setup containers (build and run)"

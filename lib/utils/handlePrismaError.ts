@@ -3,7 +3,7 @@ import {
   PrismaClientValidationError,
 } from "@prisma/client/runtime/library";
 
-export const handlePrismaError = (error: unknown) => {
+export const handlePrismaError = (error: unknown) => {  console.error("PRISMA ERROR CAUGHT:", error); // ← ajoute ça
   if (error instanceof PrismaClientKnownRequestError) {
     switch (error.code) {
       case "P2002": {

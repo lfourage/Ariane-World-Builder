@@ -1,5 +1,5 @@
-import { button } from "@/app/lib/ui/button";
-import { input } from "@/app/lib/ui/input";
+import { button } from "@tv/button";
+import { input } from "@tv/input";
 
 interface loginFormProps {
   handleClick: () => void;

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { RegisterForm } from "@/app/ui/forms/RegisterForm";
-import { LoginForm } from "@/app/ui/forms/LoginForm";
-import { RegisterButton } from "@/app/ui/buttons/RegisterButton";
-import { LoginButton } from "@/app/ui/buttons/LoginButton";
+import { RegisterForm } from "@components/forms/RegisterForm";
+import { LoginForm } from "@components/forms/LoginForm";
+import { RegisterButton } from "@components/buttons/RegisterButton";
+import { LoginButton } from "@components/buttons/LoginButton";
 
 export default function Home() {
   const [ registerFormToggle , setRegisterFormToggle] = useState(false);

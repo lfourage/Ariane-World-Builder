@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { registerSchema } from "@/app/lib/schemas/userSchema";
 import { ZodError } from "zod";
-import { button } from "@/app/lib/ui/button";
-import { input } from "@/app/lib/ui/input";
+import { registerSchema } from "lib/schemas/userSchema";
+import { parseZodErrors } from "lib/utils/parseZodErrors";
+import { button } from "lib/tv/button";
+import { input } from "lib/tv/input";
 
 interface registerFormProps {
   handleClick: () => void;
@@ -32,20 +33,14 @@ export const RegisterForm = ({ handleClick }: registerFormProps) => {
       const parsed = registerSchema.parse(formData);
       setErrors({});
 
-      await fetch("api/register", {
+      await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
       });
-    } catch (err: unknown) {
-      if (err instanceof ZodError) {
-        const fieldErrors: Record<string, string> = {};
-
-        err.issues.forEach((issue) => {
-          if (issue.path[0])
-            fieldErrors[issue.path[0] as string] = issue.message;
-        });
-        setErrors(fieldErrors);
+    } catch (error: unknown) {
+      if (error instanceof ZodError) {
+        setErrors(parseZodErrors(error));
       } else
           setErrors({ general: "Unknow error" });
     }

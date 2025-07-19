@@ -1,4 +1,4 @@
-import { button } from "@/app/lib/ui/button";
+import { button } from "@tv/button";
 
 interface registerButtonProps {
     handleClick: () => void;

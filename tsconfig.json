@@ -20,8 +20,17 @@
         "name": "next"
       }
     ],
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@app/*": ["app/*"],
+      "@styles": ["app/styles/globals.css"],
+      "@components/*": ["components/*"],
+      "@lib/*": ["lib/*"],
+      "@db": ["lib/db/prisma"],
+      "@utils/*": ["lib/utils/*"],
+      "@schemas/*": ["lib/schemas/*"],
+      "@tv/*": ["lib/tv/*"],
+      "@configs/*": ["configs/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

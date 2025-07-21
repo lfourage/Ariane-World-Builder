@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 if ! command -v docker &>/dev/null; then
@@ -15,7 +14,7 @@ fi
 echo "🔧 Creating .env file if needed..."
 if [ ! -f ".env" ]; then
     cat <<EOF >.env
-DATABASE_URL="postgresql://postgres:postgres@db:5432/mydb"
+DATABASE_URL="postgresql://postgres:password@db:5432/mydb?schema=public"
 NEXTAUTH_SECRET="my-super-secret"
 EOF
     echo "✅ .env file created."
@@ -27,14 +26,48 @@ echo "🐳 Building and starting containers..."
 docker compose up -d --build
 
 echo "⏳ Waiting for the database to be ready..."
-sleep 5
+
+max_attempts=30
+attempt=1
+
+while [ $attempt -le $max_attempts ]; do
+    if docker compose exec db pg_isready -U postgres >/dev/null 2>&1; then
+        echo "✅ Database is ready!"
+        break
+    fi
+    echo "Waiting for database... (attempt $attempt/$max_attempts)"
+    sleep 2
+    ((attempt++))
+done
+
+if [ $attempt -gt $max_attempts ]; then
+    echo "❌ Database failed to start after $max_attempts attempts"
+    docker compose logs db
+    exit 1
+fi
+
+sleep 3
 
 echo "🧬 Running Prisma setup..."
 docker compose exec app npx prisma generate
 docker compose exec app npx prisma migrate dev --name init
 
-until curl -s http://localhost:3000 >/dev/null; do
-    sleep 1
+echo "⏳ Waiting for the app to be ready..."
+max_attempts=30
+attempt=1
+
+while [ $attempt -le $max_attempts ]; do
+    if curl -s http://localhost:3000 >/dev/null 2>&1; then
+        echo "✅ App is ready!"
+        break
+    fi
+    echo "Waiting for app... (attempt $attempt/$max_attempts)"
+    sleep 2
+    ((attempt++))
 done
 
-echo "🚀 App running at http://localhost:3000"
+if [ $attempt -gt $max_attempts ]; then
+    echo "❌ App failed to start after $max_attempts attempts"
+    docker compose logs app
+    exit 1
+fi

@@ -29,8 +29,7 @@
       "@db": ["lib/db/prisma"],
       "@utils/*": ["lib/utils/*"],
       "@schemas/*": ["lib/schemas/*"],
-      "@tv/*": ["lib/tv/*"],
-      "@configs/*": ["configs/*"]
+      "@tv/*": ["lib/tv/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

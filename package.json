@@ -9,6 +9,7 @@
     "lint": "eslint . -c configs/eslint.config.mjs"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
     "@prisma/client": "^6.12.0",
     "bcryptjs": "^3.0.2",
     "next": "15.3.5",

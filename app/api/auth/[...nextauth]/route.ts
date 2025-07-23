@@ -1,13 +1,11 @@
-import NextAuth, { NextAuthConfig } from "next-auth"
+import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@db";
 import bcrypt from "bcryptjs";
 import { loginSchema } from "@schemas/userSchema";
-import type { Session } from "next-auth"
-import type { JWT } from "next-auth/jwt"
 
-export const authOptions : NextAuthConfig = {
+export const authOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -17,23 +15,20 @@ export const authOptions : NextAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password)
-          throw new Error("Missing credentials");
-
+        if (!credentials?.email || !credentials?.password) return null;
+        
         const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) throw new Error("Invalid credentials format");
-
+        if (!parsed.success) return null;
+        
         const user = await prisma.user.findUnique({
           where: { email: parsed.data.email },
         });
-        if (!user || !user.password) throw new Error("Invalid credentials");
-
-        const isValid = await bcrypt.compare(
-          parsed.data.password,
-          user.password
-        );
-        if (!isValid) throw new Error("Invalid credentials");
-
+        
+        if (!user || !user.password) return null;
+        
+        const isValid = await bcrypt.compare(parsed.data.password, user.password);
+        if (!isValid) return null;
+        
         return {
           id: user.id,
           email: user.email,
@@ -44,14 +39,19 @@ export const authOptions : NextAuthConfig = {
     }),
   ],
   session: {
-    strategy: "database",
-    maxAge: 30 * 24 * 60 * 60,
+    strategy: "jwt" as const,
   },
   pages: {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async session({ session, token }: { session: Session; token: JWT }) {
+    async jwt({ token, user }: { token: any; user?: any }) {
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }: { session: any; token: any }) {
       if (session.user && token.sub) {
         session.user.id = token.sub;
       }
@@ -61,5 +61,4 @@ export const authOptions : NextAuthConfig = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

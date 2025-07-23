@@ -1,7 +1,8 @@
-import path from "path"
-import type { NextConfig } from "next";
+/* eslint-disable @typescript-eslint/no-require-imports */
+const path = require("path");
 
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
@@ -14,4 +15,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

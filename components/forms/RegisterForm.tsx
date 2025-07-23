@@ -4,6 +4,7 @@ import { registerSchema } from "lib/schemas/userSchema";
 import { parseZodErrors } from "lib/utils/parseZodErrors";
 import { button } from "lib/tv/button";
 import { input } from "lib/tv/input";
+import { signIn } from "next-auth/react";
 
 interface registerFormProps {
   handleClick: () => void;
@@ -38,11 +39,28 @@ export const RegisterForm = ({ handleClick }: registerFormProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
       });
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setErrors({ general: result.error });
+        return;
+      }
+
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      handleClick();
     } catch (error: unknown) {
       if (error instanceof ZodError) {
         setErrors(parseZodErrors(error));
-      } else
-          setErrors({ general: "Unknow error" });
+      } else setErrors({ general: "Unknow error" });
     }
   };
 

@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ZodError } from "zod";
-import { registerSchema } from "lib/schemas/userSchema";
-import { parseZodErrors } from "lib/utils/parseZodErrors";
-import { button } from "lib/tv/button";
-import { input } from "lib/tv/input";
 import { signIn } from "next-auth/react";
+import { ZodError } from "zod";
+import { registerSchema } from "@schemas/userSchema";
+import { parseZodErrors } from "@utils/parseZodErrors";
+import { parseSigninErrors } from "@utils/parseSigninErrors";
+import { button } from "@tv/button";
+import { input } from "@tv/input";
 
 interface registerFormProps {
   handleClick: () => void;
@@ -39,24 +40,19 @@ export const RegisterForm = ({ handleClick }: registerFormProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
       });
+
       const result = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
+        email: parsed.email,
+        password: parsed.password,
         redirect: false,
       });
 
       if (result?.error) {
-        setErrors({ general: result.error });
+        setErrors(parseSigninErrors(result.error));
         return;
       }
-
-      setFormData({
-        name: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
       handleClick();
+
     } catch (error: unknown) {
       if (error instanceof ZodError) {
         setErrors(parseZodErrors(error));

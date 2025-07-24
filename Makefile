@@ -11,7 +11,7 @@ else
   TEARDOWN_CMD := powershell -ExecutionPolicy Bypass -File .\scripts\teardown.ps1
 endif
 
-.PHONY: setup clear reset start stop logs help
+.PHONY: setup clear reset seed start stop logs help
 
 setup:
 	$(SETUP_CMD)
@@ -22,6 +22,9 @@ clear:
 reset:
 	$(TEARDOWN_CMD)
 	$(SETUP_CMD)
+
+seed:
+	docker compose exec app npm run seed
 
 start:
 	docker compose start

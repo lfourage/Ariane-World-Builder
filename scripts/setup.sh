@@ -15,6 +15,7 @@ echo "🔧 Creating .env file if needed..."
 if [ ! -f ".env" ]; then
     cat <<EOF >.env
 DATABASE_URL="postgresql://postgres:password@db:5432/mydb?schema=public"
+NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="my-super-secret"
 EOF
     echo "✅ .env file created."

@@ -1,31 +1,32 @@
 "use client";
 
 import { useState } from "react";
+import { UserInterfaceLayout } from "@components/UserInterfaceLayout";
 import { RegisterForm } from "@components/forms/RegisterForm";
 import { LoginForm } from "@components/forms/LoginForm";
-import { RegisterButton } from "@components/buttons/RegisterButton";
-import { LoginButton } from "@components/buttons/LoginButton";
 //import { useSession } from "next-auth/react";
 
 export default function Home() {
   const [ registerFormToggle , setRegisterFormToggle] = useState(false);
   const [ loginFormToggle , setLoginFormToggle] = useState(false);
-/*  const { data: session, status, update } = useSession();*/
+  //const { data: session, status, update } = useSession();
 
   const toggleLoginForm = () => {
     setLoginFormToggle((prev) => !prev);
   }
 
-  const toggleSignupForm = () => {
+  const toggleRegisterForm = () => {
     setRegisterFormToggle((prev) => !prev);
   }
 
   return (
     <>
-      {registerFormToggle && <RegisterForm handleClick={toggleSignupForm}/>}
-      {loginFormToggle && <LoginForm handleClick={toggleLoginForm}/>}
-      <RegisterButton handleClick={toggleSignupForm} />
-      <LoginButton handleClick={toggleLoginForm} />
+      {registerFormToggle && <RegisterForm handleClick={toggleRegisterForm} />}
+      {loginFormToggle && <LoginForm handleClick={toggleLoginForm} />}
+      <UserInterfaceLayout
+        toggleRegisterForm={toggleRegisterForm}
+        toggleLoginForm={toggleLoginForm}
+      />
     </>
   );
 }

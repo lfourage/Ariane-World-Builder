@@ -22,7 +22,6 @@ export function withErrorHandler(
         });
       }
 
-      // Log the unknown error for debugging
       console.error("Unhandled error:", error);
       return NextResponse.json(
         { error: "Internal server error" },

@@ -1,28 +1,18 @@
 export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { prisma } from "@db";
-import { registerSchema } from "@schemas/userSchema";
 import { withErrorHandler } from "@utils/withErrorHandler";
+import { registerSchema } from "@schemas/userSchema";
+import { registerUser } from "@services/userService";
 
 async function handler(req: NextRequest) {
   const body = await req.json();
   const parsed = registerSchema.parse(body);
-  const { name, password, email, image } = parsed;
-  const hashedPassword = (await bcrypt.hash(password, 10)).toString();
 
-  const user = await prisma.user.create({
-    data: {
-      name,
-      password: hashedPassword,
-      email,
-      image,
-    },
-  });
+  const userId = await registerUser(parsed);
 
   return NextResponse.json(
-    { message: "User created", userId: user.id },
+    { message: "User created", userId },
     { status: 201 }
   );
 }

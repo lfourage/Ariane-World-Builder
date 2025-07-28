@@ -23,6 +23,7 @@
       "@db": ["lib/db/prisma"],
       "@utils/*": ["lib/utils/*"],
       "@schemas/*": ["lib/schemas/*"],
+      "@services/*": ["lib/services/*"],
       "@tv/*": ["lib/tv/*"]
     },
     "plugins": [

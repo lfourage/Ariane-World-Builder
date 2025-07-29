@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { handleZodError } from "@utils/handleZodError";
 import { handlePrismaError } from "@utils//handlePrismaError";
-import { UserAlreadyExistsError } from "@lib/types/UserAlreadyExistsError";
+import { UserAlreadyExistsError } from "@types/UserAlreadyExistsError";
 
 export function withErrorHandler(
   handler: (req: NextRequest) => Promise<NextResponse>

@@ -1,7 +1,7 @@
 import { prisma } from "@db";
-import { UserAlreadyExistsError } from "@lib/types/UserAlreadyExistsError";
 import bcrypt from "bcryptjs";
 import validator from "validator";
+import { UserAlreadyExistsError } from "@types/UserAlreadyExistsError";
 
 interface RegisterInput {
   name?: string;

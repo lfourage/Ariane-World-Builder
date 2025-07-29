@@ -2,6 +2,7 @@ import { ZodError } from "zod";
 import { NextRequest, NextResponse } from "next/server";
 import { handleZodError } from "@utils/handleZodError";
 import { handlePrismaError } from "@utils//handlePrismaError";
+import { UserAlreadyExistsError } from "@lib/types/UserAlreadyExistsError";
 
 export function withErrorHandler(
   handler: (req: NextRequest) => Promise<NextResponse>
@@ -10,6 +11,10 @@ export function withErrorHandler(
     try {
       return await handler(req);
     } catch (error) {
+      if (error instanceof UserAlreadyExistsError) {
+        return NextResponse.json(error.message, { status: 409 });
+      }
+
       if (error instanceof ZodError) {
         const result = handleZodError(error);
         return NextResponse.json(result.body, { status: result.status });

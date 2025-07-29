@@ -10,6 +10,9 @@ export function parseSigninErrors(error: string) {
         fieldErrors["form"] = "Your account has been disabled";
         break ;
     }
+    case "UserAlreadyExistsError": {
+      fieldErrors["email"] = "This email is already registered";
+    }
     default: {
         fieldErrors["general"] = "Unknown error";
     }

@@ -1,4 +1,5 @@
 import { prisma } from "@db";
+import { UserAlreadyExistsError } from "@lib/types/UserAlreadyExistsError";
 import bcrypt from "bcryptjs";
 import validator from "validator";
 
@@ -9,15 +10,21 @@ interface RegisterInput {
   image?: string;
 }
 
+function sanitizeRegisterInput(input: RegisterInput): RegisterInput {
+  return {
+    name: input.name ? validator.escape(validator.trim(input.name)) : undefined,
+    email: validator.normalizeEmail(input.email) || input.email,
+    password: input.password.trim(),
+    image: input.image?.trim(),
+  };
+}
+
 export async function registerUser(input: RegisterInput): Promise<string> {
-  const name = input.name ? validator.escape(validator.trim(input.name)) : undefined;
-  const email = validator.normalizeEmail(input.email) || input.email;
-  const password = input.password;
-  const image = input.image;
+  const { name, email, password, image } = sanitizeRegisterInput(input);
 
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) {
-    throw new Error("Email already registered");
+    throw new UserAlreadyExistsError(email);
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);

@@ -35,11 +35,16 @@ export const RegisterForm = ({ handleClick }: registerFormProps) => {
       const parsed = registerSchema.parse(formData);
       setErrors({});
 
-      await fetch("/api/register", {
+      const res = await fetch("/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),
       });
+
+      if (!res.ok) {
+        setErrors(parseSigninErrors("UserAlreadyExistsError"));
+        return ;
+      }
 
       const result = await signIn("credentials", {
         email: parsed.email,
@@ -52,11 +57,10 @@ export const RegisterForm = ({ handleClick }: registerFormProps) => {
         return;
       }
       handleClick();
-
     } catch (error: unknown) {
       if (error instanceof ZodError) {
         setErrors(parseZodErrors(error));
-      } else setErrors({ general: "Unknow error" });
+      } else setErrors({ general: "Unknown error" });
     }
   };
 

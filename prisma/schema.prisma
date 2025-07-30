@@ -8,15 +8,34 @@ generator client {
 }
 
 model Event {
-  id          String  @id @default(cuid())
-  data        Json
+  id        String            @id @default(cuid())
+  data      Json
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+  nexts     EventConnection[] @relation("prevEvent")
+  prevs     EventConnection[] @relation("nextEvent")
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
 }
 
+enum ConnectionType {
+  LINEAR
+  TIMETRAVEL
+}
+
 model EventConnection {
-  id          String  @id @default(cuid())
+  id    String         @id @default(cuid())
+  order Int            @default(0)
+  type  ConnectionType @default(LINEAR)
+
+  next   Event?  @relation("nextEvent", fields: [nextId], references: [id])
+  prev   Event?  @relation("prevEvent", fields: [prevId], references: [id])
+  nextId String?
+  prevId String?
+
+  @@unique([nextId, prevId])
+  @@index([prevId, order])
 }
 
 model User {

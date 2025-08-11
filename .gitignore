@@ -44,4 +44,5 @@ package-lock.json
 
 /app/generated/prisma
 /prisma/migrations/
+/.vscode/
 

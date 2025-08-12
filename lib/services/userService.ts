@@ -1,7 +1,7 @@
 import { prisma } from "@db";
 import bcrypt from "bcryptjs";
 import validator from "validator";
-import { UserAlreadyExistsError } from "@types/UserAlreadyExistsError";
+import { UserAlreadyExistsError } from "@lib/types/UserAlreadyExistsError";
 
 interface RegisterInput {
   name?: string;
@@ -10,11 +10,29 @@ interface RegisterInput {
   image?: string;
 }
 
+interface EditInput {
+  id: string;
+  name?: string;
+  email?: string;
+  image?: string;
+}
+
 function sanitizeRegisterInput(input: RegisterInput): RegisterInput {
   return {
     name: input.name ? validator.escape(validator.trim(input.name)) : undefined,
     email: validator.normalizeEmail(input.email) || input.email,
     password: input.password.trim(),
+    image: input.image?.trim(),
+  };
+}
+
+function sanitizeEditInput(input: EditInput): EditInput {
+  return {
+    id: input.id,
+    name: input.name ? validator.escape(validator.trim(input.name)) : undefined,
+    email: input.email
+      ? validator.normalizeEmail(input.email) || input.email
+      : undefined,
     image: input.image?.trim(),
   };
 }
@@ -40,4 +58,24 @@ export async function registerUser(input: RegisterInput): Promise<string> {
   });
 
   return user.id;
+}
+
+export async function editUser(input: EditInput): Promise<string> {
+  const { id, name, email, image } = sanitizeEditInput(input);
+
+  const updated = await prisma.user.update({
+    where: { id: id },
+    data: {
+      ...(name !== undefined && { name: name }),
+      ...(email !== undefined && { email: email }),
+      ...(image !== undefined && { image: image }),
+    },
+  });
+
+  return updated.id;
+}
+
+export async function deleteUser(id: string) {
+
+  await prisma.user.delete({ where: { id: id } });
 }

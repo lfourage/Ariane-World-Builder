@@ -17,4 +17,4 @@ async function handler(req: NextRequest) {
   );
 }
 
-export const POST = withErrorHandler(handler);
+export const PUT = withErrorHandler(handler);

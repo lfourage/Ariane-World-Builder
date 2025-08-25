@@ -17,6 +17,13 @@ interface EditInput {
   image?: string;
 }
 
+interface User {
+  id: string;
+  name?: string;
+  email: string;
+  image?: string;
+}
+
 function sanitizeRegisterInput(input: RegisterInput): RegisterInput {
   return {
     name: input.name ? validator.escape(validator.trim(input.name)) : undefined,
@@ -35,6 +42,20 @@ function sanitizeEditInput(input: EditInput): EditInput {
       : undefined,
     image: input.image?.trim(),
   };
+}
+
+export async function getAllUsers() {
+  const data = await prisma.user.findMany();
+  const userList: Array<User> = data.map((u: User) => {
+    return {
+      id: u.id,
+      name: u.name ? u.name : "",
+      email: u.email,
+      image: u.image ? u.image : "",
+    };
+  });
+
+  return userList;
 }
 
 export async function registerUser(input: RegisterInput): Promise<string> {
@@ -76,6 +97,5 @@ export async function editUser(input: EditInput): Promise<string> {
 }
 
 export async function deleteUser(id: string) {
-
   await prisma.user.delete({ where: { id: id } });
 }

@@ -7,13 +7,13 @@ import { deleteUser } from "@services/userService";
 
 async function handler(req: NextRequest) {
   const body = await req.json();
-  const { id } = deleteSchema.parse(body);
+  const parsed = deleteSchema.parse(body);
 
-  await deleteUser(id);
+  await deleteUser(parsed.id);
 
   return NextResponse.json(
     { message: "User deleted" },
-    { status: 204 }
+    { status: 200 }
   );
 }
 

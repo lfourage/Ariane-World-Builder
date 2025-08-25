@@ -46,6 +46,9 @@ function sanitizeEditInput(input: EditInput): EditInput {
 
 export async function getAllUsers() {
   const data = await prisma.user.findMany();
+  if (!data)
+    return [];
+
   const userList: Array<User> = data.map((u: User) => {
     return {
       id: u.id,

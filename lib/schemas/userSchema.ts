@@ -19,12 +19,12 @@ export const loginSchema = z.object({
 });
 
 export const editSchema = z.object({
-  id: z.uuid(),
+  id: z.cuid(),
   name: z.string().min(2).optional(),
   email: z.email().optional(),
   image: z.string().optional(),
 });
 
 export const deleteSchema = z.object({
-  id: z.uuid(),
+  id: z.cuid(),
 });

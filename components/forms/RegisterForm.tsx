@@ -35,7 +35,7 @@ export const RegisterForm = ({ handleClick }: registerFormProps) => {
       const parsed = registerSchema.parse(formData);
       setErrors({});
 
-      const res = await fetch("/api/user/register", {
+      const res = await fetch("/api/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),

@@ -5,7 +5,11 @@ const EventNodeDataSchema = z.object({
   description: z.string(),
 });
 
-const EventConnectionSchema = z.object({});
+const EventConnectionSchema = z.object({
+  type: z.enum(["LINEAR", "TIMETRAVEL"]),
+  nextId: z.cuid().optional(),
+  prevId: z.cuid().optional(),
+});
 
 export const CreateEventSchema = z.object({
   data: EventNodeDataSchema,

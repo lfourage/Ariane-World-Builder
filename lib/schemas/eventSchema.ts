@@ -5,7 +5,7 @@ const EventNodeDataSchema = z.object({
   description: z.string(),
 });
 
-const EventConnectionSchema = z.object({}); 
+const EventConnectionSchema = z.object({});
 
 export const CreateEventSchema = z.object({
   data: EventNodeDataSchema,

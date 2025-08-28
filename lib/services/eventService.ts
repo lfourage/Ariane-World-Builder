@@ -1,8 +1,9 @@
 import { prisma } from "@db";
-import { CreateEventSchema } from "@lib/schemas/eventSchema";
+import { CreateEventSchema, InsertEventSchema } from "@lib/schemas/eventSchema";
 import type {
   //  Event,
   CreateEventRequest,
+  InsertEventRequest,
   //  UpdateEventRequest,
 } from "@lib/types/EventTypes";
 
@@ -24,5 +25,7 @@ export class EventService {
     return newEvent.id;
   }
 
-//  async insertEvent(input: )
+  async insertEvent(input: InsertEventRequest) {
+    
+  }
 }

@@ -1,17 +1,28 @@
 import { prisma } from "@db";
-
-interface CreateEventInput {
-  title: string;
-  data: {
-    description: string;
-  };
-  nextId?: string;
-}
+import { CreateEventSchema } from "@lib/schemas/eventSchema";
+import type {
+  //  Event,
+  CreateEventRequest,
+  //  UpdateEventRequest,
+} from "@lib/types/EventTypes";
 
 export class EventService {
-  async createEvent(input: CreateEventInput): Promise<Event> {
-    const newEvent = await prisma.event.create(input);
+  async createEvent(input: CreateEventRequest): Promise<string> {
+    const { title, data, authorId } = CreateEventSchema.parse(input);
 
-    return newEvent;
+    const newEvent = await prisma.event.create({
+      data: {
+        title,
+        data: data || {},
+        authorId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return newEvent.id;
   }
+
+//  async insertEvent(input: )
 }

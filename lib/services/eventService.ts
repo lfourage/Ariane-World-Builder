@@ -1,6 +1,6 @@
 import { prisma } from "@db";
 import { CreateEventSchema, InsertEventSchema } from "@lib/schemas/eventSchema";
-import type {
+import {
   //  Event,
   CreateEventRequest,
   InsertEventRequest,
@@ -25,7 +25,7 @@ export class EventService {
     return newEvent.id;
   }
 
-  async insertEvent(input: InsertEventRequest) {
-    
-  }
+  async createEventConnection(type: string = "LINEAR", prevId: string, ) {}
+
+  async insertEventBetween(targetId: string, prevId: string, nextId: string) {}
 }

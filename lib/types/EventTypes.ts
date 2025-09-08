@@ -23,22 +23,15 @@ enum ConnectionType {
   TIMETRAVEL,
 }
 
-export type EventConnection = {
-  type: ConnectionType;
-  order?: number,
-  nextId?: string;
-  prevId?: string;
-};
-
-
 export type InsertEventRequest = {
-  sourceId: string;
-  connection: EventConnection;
+  type: ConnectionType;
+  prevId?: string;
+  nextId?: string;
 };
 
 export type CreateAndInsertRequest = {
   createReq: CreateEventRequest;
-  connection: EventConnection;
+  connection: InsertEventRequest;
 };
 
 export type UpdateEventRequest = {

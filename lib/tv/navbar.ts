@@ -1,6 +1,6 @@
 import { tv } from "tailwind-variants";
 
-export const header = tv({
+export const navbar = tv({
   base: "w-full flex items-center justify-between px-6 py-4 bg-black shadow-md border-b",
   variants: {
     padded: {

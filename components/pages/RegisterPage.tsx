@@ -37,7 +37,7 @@ export default function RegisterPage() {
       const parsed = registerSchema.parse(formData);
       setErrors({});
 
-      const res = await fetch("/api/users/register", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(parsed),

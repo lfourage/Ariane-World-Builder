@@ -1,3 +1,6 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { button } from "@tv/button";
 
@@ -6,20 +9,15 @@ interface NavLinkProps {
 }
 
 export const NavLink = ({ type }: NavLinkProps) => {
-  let path: string = "";
+  const pathname = usePathname();
 
-  switch (type) {
-    case "Register":
-      path = "/register";
-      break;
-    case "Login":
-      path = "/login";
-      break;
-    default:
-  }
+  if (pathname === "/login" || pathname === "/register")
+    return ;
+
+  const targetUrl = `${type.toLowerCase()}?callbackUrl=${pathname}`;
 
   return (
-    <Link className={button({ intent: "nature", size: "md" })} href={path}>
+    <Link className={button({ intent: "nature", size: "md" })} href={targetUrl}>
       {type}
     </Link>
   );

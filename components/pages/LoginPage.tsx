@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { ZodError } from "zod";
-import { signIn } from "next-auth/react";
 import { useState } from "react";
-//import { useRouter } from "next/router";
+import { useSearchParams, useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { ZodError } from "zod";
 import { loginSchema } from "@schemas/userSchema";
 import { parseZodErrors } from "@utils/parseZodErrors";
 import { parseSigninErrors } from "@utils/parseSigninErrors";
@@ -11,12 +11,15 @@ import { button } from "@tv/button";
 import { input } from "@tv/input";
 
 export default function LoginPage() {
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const router = useRouter();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
   const [errors, setErrors] = useState<Record<string, string>>({});
-  //const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevState) => ({
@@ -35,15 +38,16 @@ export default function LoginPage() {
       const result = await signIn("credentials", {
         email: parsed.email,
         password: parsed.password,
+        callbackUrl,
         redirect: false,
       });
 
       if (result?.error) {
         setErrors(parseSigninErrors(result.error));
         return;
+      } else { 
+        router.push(callbackUrl);
       }
-
-      //router.push("/");
     } catch (error: unknown) {
       if (error instanceof ZodError) {
         setErrors(parseZodErrors(error));

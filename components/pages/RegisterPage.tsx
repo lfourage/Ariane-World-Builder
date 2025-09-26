@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { ZodError } from "zod";
@@ -10,12 +11,15 @@ import { button } from "@tv/button";
 import { input } from "@tv/input";
 
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const router = useRouter();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -47,12 +51,15 @@ export default function RegisterPage() {
       const result = await signIn("credentials", {
         email: parsed.email,
         password: parsed.password,
+        callbackUrl,
         redirect: false,
       });
 
       if (result?.error) {
         setErrors(parseSigninErrors(result.error));
         return;
+      } else { 
+        router.push(callbackUrl);
       }
     } catch (error: unknown) {
       if (error instanceof ZodError) {

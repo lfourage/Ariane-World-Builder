@@ -12,9 +12,16 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
+const initialNodes = [
+  { id: 'n1', position: { x: -100, y: 0 }, data: { label: 'Node 1' } },
+  { id: 'n2', position: { x: 100, y: 0 }, data: { label: 'Node 2' } },
+  { id: 'n3', position: { x: 0, y: 100 }, data: { label: 'Node 3' } },
+];
+const initialEdges = [{ id: 'n1-n3', source: 'n1', target: 'n3' }, { id: 'n2-n3', source: 'n2', target: 'n3' }];
+
 export default function SchematizerPage() {
-  const [nodes, setNodes] = useState<Array<Node>>([]);
-  const [edges, setEdges] = useState<Array<Edge>>([]);
+  const [nodes, setNodes] = useState<Array<Node>>(initialNodes);
+  const [edges, setEdges] = useState<Array<Edge>>(initialEdges);
 
   const onNodesChange = useCallback(
     (changes: NodeChange<Node>[]) =>

@@ -11,7 +11,7 @@ else
   TEARDOWN_CMD := powershell -ExecutionPolicy Bypass -File .\scripts\teardown.ps1
 endif
 
-.PHONY: setup clear reset seed start stop logs help
+.PHONY: setup clear reset seed start stop studio logs help
 
 setup:
 	$(SETUP_CMD)
@@ -31,6 +31,9 @@ start:
 
 stop:
 	docker compose stop
+
+studio:
+	docker compose exec app npx prisma studio
 
 logs:
 	@docker compose logs -f app

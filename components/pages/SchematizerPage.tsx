@@ -17,6 +17,20 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import NewNodeModal from "@components/ui/NewNodeModal";
+import { button } from "@lib/tv/button";
+
+type NodeParams = {
+  id: string;
+  position: {
+    x: number;
+    y: number;
+  };
+  data: {
+    label: string;
+  }
+};
+
+let nodeCount = 4;
 
 const initialNodes = [
   { id: "n1", position: { x: -100, y: 0 }, data: { label: "Node 1" } },
@@ -39,11 +53,36 @@ function FlowInner() {
   const [nodes, setNodes] = useState<Array<Node>>(initialNodes);
   const [edges, setEdges] = useState<Array<Edge>>(initialEdges);
 
+  const [nodeParams, setNodeParams] = useState<NodeParams>(
+        {
+          id: `n${nodeCount}`,
+          position: { x: 100, y: 100 },
+          data: { label: "new" },
+        });
+
+  const updateNodeParams = useCallback(() => {
+    setNodeParams({
+          id: `n${nodeCount}`,
+          position: modalPos,
+          data: { label: "newv2" },
+    })
+  }, []);
+
+  const addNode = useCallback(() => {
+    setNodes((nodes) => {
+      return [
+        ...nodes, nodeParams,
+      ];
+      nodeCount++;
+    });
+  }, [nodeParams]);
+
   const onDoubleClick = useCallback(
     (event: React.MouseEvent) => {
       event.preventDefault();
       setModalPos(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
       setModalOpen(true);
+      setNodeParams({ position: modalPos});
     },
     [screenToFlowPosition]
   );
@@ -79,7 +118,7 @@ function FlowInner() {
   );
 
   return (
-    <div id="canvas" className="w-full h-screen">
+    <div id="canvas" className="w-full h-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -93,7 +132,11 @@ function FlowInner() {
         <Background variant={BackgroundVariant.Lines} />
       </ReactFlow>
       {modalOpen && modalPos && (
-        <NewNodeModal pos={getScreenPos(modalPos)} closeModal={closeModal}></NewNodeModal>
+        <NewNodeModal
+          pos={getScreenPos(modalPos)}
+          closeModal={closeModal}
+          addNode={addNode}
+        ></NewNodeModal>
       )}
     </div>
   );

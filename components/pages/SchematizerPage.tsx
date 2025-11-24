@@ -12,23 +12,10 @@ import {
   Background,
   BackgroundVariant,
   useReactFlow,
-  useStore,
-  ReactFlowProvider,
+  ReactFlowProvider
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import NewNodeModal from "@components/ui/NewNodeModal";
-import { button } from "@lib/tv/button";
-
-type NodeParams = {
-  id: string;
-  position: {
-    x: number;
-    y: number;
-  };
-  data: {
-    label: string;
-  }
-};
 
 let nodeCount = 4;
 
@@ -43,57 +30,37 @@ const initialEdges = [
 ];
 
 function FlowInner() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalPos, setModalPos] = useState<{ x: number; y: number } | null>(
-    null
-  );
-  const { screenToFlowPosition } = useReactFlow();
-  const transform = useStore((state) => state.transform);
-
   const [nodes, setNodes] = useState<Array<Node>>(initialNodes);
   const [edges, setEdges] = useState<Array<Edge>>(initialEdges);
 
-  const [nodeParams, setNodeParams] = useState<NodeParams>(
-        {
-          id: `n${nodeCount}`,
-          position: { x: 100, y: 100 },
-          data: { label: "new" },
-        });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalScreenPos, setModalScreenPos] = useState({ x: 0, y: 0 });
+  const [pendingNodeFlowPos, setPendingNodeFlowPos] = useState({ x: 0, y: 0 });
+  const { screenToFlowPosition } = useReactFlow();
 
-  const updateNodeParams = useCallback(() => {
-    setNodeParams({
-          id: `n${nodeCount}`,
-          position: modalPos,
-          data: { label: "newv2" },
-    })
-  }, []);
-
-  const addNode = useCallback(() => {
-    setNodes((nodes) => {
-      return [
-        ...nodes, nodeParams,
-      ];
-      nodeCount++;
-    });
-  }, [nodeParams]);
+  const addNode = useCallback((label : string) => {
+    const newNode = {
+      id: `n${nodeCount}`,
+      position: pendingNodeFlowPos,
+      data: { label: label || `Node ${nodeCount}` },
+    };
+    setNodes((prevNodes) => [...prevNodes, newNode]);
+    nodeCount++;
+  }, [pendingNodeFlowPos]);
 
   const onDoubleClick = useCallback(
-    (event: React.MouseEvent) => {
+    (event : React.MouseEvent) => {
       event.preventDefault();
-      setModalPos(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
+      
+      setModalScreenPos({ x: event.clientX, y: event.clientY });
+
+      const flowPos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
+      setPendingNodeFlowPos(flowPos);
+      
       setModalOpen(true);
-      setNodeParams({ position: modalPos});
     },
     [screenToFlowPosition]
   );
-
-  const getScreenPos = (pos: { x: number; y: number }) => {
-    const [tx, ty, zoom] = transform;
-    return {
-      x: pos.x * zoom + tx,
-      y: pos.y * zoom + ty,
-    };
-  };
 
   const closeModal = () => {
     setModalOpen(false);
@@ -131,11 +98,11 @@ function FlowInner() {
       >
         <Background variant={BackgroundVariant.Lines} />
       </ReactFlow>
-      {modalOpen && modalPos && (
+      {modalOpen && (
         <NewNodeModal
-          pos={getScreenPos(modalPos)}
-          closeModal={closeModal}
+          pos={modalScreenPos}
           addNode={addNode}
+          closeModal={closeModal}
         ></NewNodeModal>
       )}
     </div>

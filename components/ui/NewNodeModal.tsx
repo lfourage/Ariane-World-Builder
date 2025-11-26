@@ -18,6 +18,7 @@ export default function NewNodeModal({
   closeModal,
 }: NewNodeModalProps) {
   const [label, setLabel] = useState("");
+  const [description, setDescription] = useState("");
 
   const handleSubmit = (e: FormEvent | null = null) => {
     e?.preventDefault();
@@ -51,6 +52,7 @@ export default function NewNodeModal({
           transform: "translate(-50%, -50%)",
         }}
         onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
       >
         <label htmlFor="eventTitle">Title</label>
         <input
@@ -59,9 +61,18 @@ export default function NewNodeModal({
           className={input()}
           value={label}
           onChange={(e) => setLabel(e.target.value)}
-          onKeyDown={handleKeyDown}
           autoFocus
         />
+
+        <label htmlFor="eventDescription">Description</label>
+        <input
+          type="text"
+          id="eventDescription"
+          className={input()}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
         <button
           className={button({ intent: "nature", size: "md" })}
           type="submit"

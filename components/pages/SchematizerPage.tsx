@@ -12,7 +12,7 @@ import {
   Background,
   BackgroundVariant,
   useReactFlow,
-  ReactFlowProvider
+  ReactFlowProvider,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import NewNodeModal from "@components/ui/NewNodeModal";
@@ -38,26 +38,39 @@ function FlowInner() {
   const [pendingNodeFlowPos, setPendingNodeFlowPos] = useState({ x: 0, y: 0 });
   const { screenToFlowPosition } = useReactFlow();
 
-  const addNode = useCallback((label : string) => {
-    const newNode = {
-      id: `n${nodeCount}`,
-      position: pendingNodeFlowPos,
-      data: { label: label || `Node ${nodeCount}` },
-    };
-    setNodes((prevNodes) => [...prevNodes, newNode]);
-    nodeCount++;
-  }, [pendingNodeFlowPos]);
+  const addNode = useCallback(
+    (label: string) => {
+      const newNode = {
+        id: `n${nodeCount}`,
+        position: pendingNodeFlowPos,
+        data: { label: label || `Node ${nodeCount}` },
+      };
+      setNodes((prevNodes) => [...prevNodes, newNode]);
+      nodeCount++;
+    },
+    [pendingNodeFlowPos]
+  );
 
   const onDoubleClick = useCallback(
-    (event : React.MouseEvent) => {
-      event.preventDefault();
-      
-      setModalScreenPos({ x: event.clientX, y: event.clientY });
+    (event: React.MouseEvent) => {
+      const target = event.target as HTMLElement;
 
-      const flowPos = screenToFlowPosition({ x: event.clientX, y: event.clientY });
-      setPendingNodeFlowPos(flowPos);
-      
-      setModalOpen(true);
+      if (
+        !target.closest(".react-flow__node") &&
+        !target.closest(".react-flow__edge")
+      ) {
+        event.preventDefault();
+
+        setModalScreenPos({ x: event.clientX, y: event.clientY });
+
+        const flowPos = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+        setPendingNodeFlowPos(flowPos);
+
+        setModalOpen(true);
+      }
     },
     [screenToFlowPosition]
   );

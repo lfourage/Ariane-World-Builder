@@ -72,7 +72,7 @@ function FlowInner() {
         setModalOpen(true);
       }
     },
-    [screenToFlowPosition]
+    [screenToFlowPosition, modalPos]
   );
 
   const closeModal = () => {

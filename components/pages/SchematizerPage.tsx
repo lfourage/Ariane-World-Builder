@@ -1,7 +1,10 @@
 "use client";
+
 import { useState, useCallback } from "react";
 import {
   ReactFlow,
+  useNodesState,
+  useEdgesState,
   applyNodeChanges,
   applyEdgeChanges,
   addEdge,
@@ -15,25 +18,45 @@ import {
   ReactFlowProvider,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import NewNodeModal from "@components/ui/NewNodeModal";
+import EventFormModal from "@components/ui/EventFormModal";
+import EventNode, { EventNodeData } from "@components/ui/EventNode";
 
 let nodeCount = 4;
 
-const initialNodes = [
-  { id: "n1", position: { x: -100, y: 0 }, data: { label: "Node 1" } },
-  { id: "n2", position: { x: 100, y: 0 }, data: { label: "Node 2" } },
-  { id: "n3", position: { x: 0, y: 100 }, data: { label: "Node 3" } },
-];
-const initialEdges = [
-  { id: "n1-n3", source: "n1", target: "n3" },
-  { id: "n2-n3", source: "n2", target: "n3" },
-];
+const nodeTypes = {
+  eventNode: EventNode,
+};
+/*
+interface FrontEvent {
+  id: string;
+  title: string;
+  description?: string | null;
+  positionX: number;
+  positionY: number;
+  nexts?: Array<{
+    id: string;
+    nextId: string | null;
+    type: string;
+    order: number;
+  }>;
+}
+
+interface CanvasProps {
+  events: FrontEvent[];
+  onEventCreate: (position: { x: number; y: number }) => void;
+  onEventUpdate: (id: string, position: { x: number; y: number }) => void;
+  onEventDelete: (id: string) => void;
+  onEventEdit: (id: string) => void;
+  onConnectionCreate: (source: string, target: string, type: string) => void;
+  onConnectionDelete: (source: string, target: string) => void;
+}*/
 
 function FlowInner() {
-  const [nodes, setNodes] = useState<Array<Node>>(initialNodes);
-  const [edges, setEdges] = useState<Array<Edge>>(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  //const [selectedNode, setSelectedNode] = useState<string | null>(null);
 
-  const [modalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalScreenPos, setModalScreenPos] = useState({ x: 0, y: 0 });
   const [pendingNodeFlowPos, setPendingNodeFlowPos] = useState({ x: 0, y: 0 });
   const { screenToFlowPosition } = useReactFlow();
@@ -50,6 +73,10 @@ function FlowInner() {
     },
     [pendingNodeFlowPos]
   );
+
+  /*const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    setSelectedNode(node.id);
+  }, []);*/
 
   const onDoubleClick = useCallback(
     (event: React.MouseEvent) => {
@@ -72,24 +99,12 @@ function FlowInner() {
         setModalOpen(true);
       }
     },
-    [screenToFlowPosition, modalPos]
+    [screenToFlowPosition]
   );
 
   const closeModal = () => {
-    setModalOpen(false);
+    setIsModalOpen(false);
   };
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange<Node>[]) =>
-      setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
-    []
-  );
-
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange<Edge>[]) =>
-      setEdges((edgesSnapshot) => applyEdgeChanges(changes, edgesSnapshot)),
-    []
-  );
 
   const onConnect = useCallback(
     (params: any) =>
@@ -98,25 +113,28 @@ function FlowInner() {
   );
 
   return (
-    <div id="canvas" className="w-full h-full">
+    <div className="w-full h-full">
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         zoomOnDoubleClick={false}
         onDoubleClick={onDoubleClick}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        //onNodeClick={onNodeClick}
+        style={{ backgroundColor: "#1a1a1a" }}
         fitView
       >
-        <Background variant={BackgroundVariant.Lines} />
+        <Background color="#333" gap={20} />
       </ReactFlow>
-      {modalOpen && (
-        <NewNodeModal
+      {isModalOpen && (
+        <EventFormModal
           pos={modalScreenPos}
           addNode={addNode}
           closeModal={closeModal}
-        ></NewNodeModal>
+        ></EventFormModal>
       )}
     </div>
   );

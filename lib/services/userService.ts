@@ -49,7 +49,7 @@ export async function getAllUsers() {
   if (!data)
     return [];
 
-  const userList: Array<User> = data.map((u) => {
+  const userList: Array<User> = data.map((u : User) => {
     return {
       id: u.id,
       name: u.name ? u.name : "",

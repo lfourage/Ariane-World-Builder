@@ -3,7 +3,13 @@ import { input } from "@lib/tv/input";
 import { button } from "@lib/tv/button";
 import { FormEvent, useState } from "react";
 
-interface NewNodeModalProps {
+interface EventFormModalProps {
+  isOpen: boolean;
+  eventId?: string | null;
+  initialData?: {
+    title: string;
+    description?: string;
+  }
   pos: {
     x: number;
     y: number;
@@ -12,11 +18,12 @@ interface NewNodeModalProps {
   closeModal: () => void;
 }
 
-export default function NewNodeModal({
+export default function EventFormModal({
+  isOpen,
   pos,
   addNode,
   closeModal,
-}: NewNodeModalProps) {
+}: EventFormModalProps) {
   const [label, setLabel] = useState("");
   const [description, setDescription] = useState("");
 

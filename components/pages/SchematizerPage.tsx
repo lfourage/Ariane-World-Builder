@@ -13,19 +13,20 @@ import {
   NodeChange,
   EdgeChange,
   Background,
-  BackgroundVariant,
   useReactFlow,
   ReactFlowProvider,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import EventFormModal from "@components/ui/EventFormModal";
-import EventNode, { EventNodeData } from "@components/ui/EventNode";
+import EventNode from "@components/ui/EventNode";
+import type { EventNodeData } from "@components/ui/EventNode";
 
 let nodeCount = 4;
 
 const nodeTypes = {
   eventNode: EventNode,
 };
+
 /*
 interface FrontEvent {
   id: string;
@@ -61,17 +62,34 @@ function FlowInner() {
   const [pendingNodeFlowPos, setPendingNodeFlowPos] = useState({ x: 0, y: 0 });
   const { screenToFlowPosition } = useReactFlow();
 
+
+  const handleEdit = useCallback((id: string) => {
+    console.log("Edit node:", id);
+    // Votre logique d'édition ici
+  }, []);
+
+  const handleDelete = useCallback((id: string) => {
+    setNodes((nds) => nds.filter((node) => node.id !== id));
+    setEdges((eds) => eds.filter((edge) => edge.source !== id && edge.target !== id));
+  }, [setNodes, setEdges]);
+
   const addNode = useCallback(
-    (label: string) => {
-      const newNode = {
+    (title: string, description?: string) => {
+      const newNode: Node<EventNodeData> = {
         id: `n${nodeCount}`,
+        type: "eventNode",
         position: pendingNodeFlowPos,
-        data: { label: label || `Node ${nodeCount}` },
+        data: {
+          title: title || `Node ${nodeCount}`,
+          description: description,
+          onEdit: handleEdit,
+          onDelete: handleDelete,
+        },
       };
       setNodes((prevNodes) => [...prevNodes, newNode]);
       nodeCount++;
     },
-    [pendingNodeFlowPos]
+    [pendingNodeFlowPos, handleEdit, handleDelete, setNodes]
   );
 
   /*const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
@@ -96,7 +114,7 @@ function FlowInner() {
         });
         setPendingNodeFlowPos(flowPos);
 
-        setModalOpen(true);
+        setIsModalOpen(true);
       }
     },
     [screenToFlowPosition]

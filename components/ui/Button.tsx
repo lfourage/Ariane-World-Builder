@@ -1,17 +1,34 @@
-import { button } from "@tv/button";
+"use client";
+import { button as buttonVariants } from "@lib/tv/button";
 
 interface ButtonProps {
-  handleClick: () => void;
-  type: "Sign out";
+  handleClick?: () => void | Promise<void>;
+  type?: string;
+  children?: React.ReactNode;
+  intent?: "primary" | "secondary" | "nature" | "danger" | "ghost";
+  size?: "sm" | "md" | "lg";
+  disabled?: boolean;
+  fullWidth?: boolean;
+  className?: string;
 }
 
-export const Button = ({ handleClick, type }: ButtonProps) => {
+export const Button = ({
+  handleClick,
+  type,
+  children,
+  intent = "primary",
+  size = "md",
+  disabled = false,
+  fullWidth = false,
+  className = "",
+}: ButtonProps) => {
   return (
     <button
-      className={button({ intent: "nature", size: "md" })}
       onClick={handleClick}
+      disabled={disabled}
+      className={`${buttonVariants({ intent, size, fullWidth })} ${className}`}
     >
-      {type}
+      {children || type}
     </button>
   );
 };

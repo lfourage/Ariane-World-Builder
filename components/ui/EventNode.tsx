@@ -1,23 +1,28 @@
 "use client";
-
 import { useState } from "react";
-import { Position, Handle, NodeProps } from "@xyflow/react";
+import { Position, Handle } from "@xyflow/react";
+import { flowNode } from "@lib/tv/node";
+import { icon } from "@lib/tv/icon";
 
-
-export interface EventNodeData {
+type EventNodeProps = {
+  data: {
+    title: string;
+    description?: string;
+    variant?: "default" | "primary" | "success" | "warning" | "danger";
+    onEdit?: (id: string) => void;
+    onDelete?: (id: string) => void;
+  };
   id: string;
-  title: string;
-  description?: string;
-  onEdit?: (id: string) => void;
-  onDelete?: (id: string) => void;
-}
+};
 
-function EventNode({ data }: NodeProps<EventNodeData>) {
+function EventNode({ data, id }: EventNodeProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const nodeStyles = flowNode({ variant: data.variant || "default", size: "md" });
+  const iconStyles = icon({ size: "sm" });
 
   return (
     <div
-      className={`px-4 py-3 shadow-lg rounded-lg border-2 min-w-[200px] max-w-[300px] relative bg-gray-200 border-green-500}`}
+      className={nodeStyles.container()}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -27,23 +32,20 @@ function EventNode({ data }: NodeProps<EventNodeData>) {
         className="w-3 h-3 !bg-green-500"
       />
 
-      {/* Action buttons container */}
       <div
-        className={`absolute top-2 right-2 flex gap-1 transition-opacity z-10 ${
-          isHovered ? "opacity-100" : "opacity-0"
-        }`}
+        className={`${nodeStyles.actions()} ${isHovered ? "opacity-100" : "opacity-0"}`}
       >
         {data.onEdit && (
           <button
             onClick={(e) => {
               e.stopPropagation();
-              data.onEdit?.(data.id);
+              data.onEdit?.(id);
             }}
-            className="p-1 rounded hover:bg-green-500/20 bg-gray-300 shadow-sm"
+            className={`${nodeStyles.actionButton()} hover:bg-green-500/20`}
             title="Edit"
           >
             <svg
-              className="w-4 h-4 text-green-600"
+              className={`${iconStyles} text-green-600`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -62,13 +64,13 @@ function EventNode({ data }: NodeProps<EventNodeData>) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              data.onDelete?.(data.id);
+              data.onDelete?.(id);
             }}
-            className="p-1 rounded hover:bg-red-500/20 bg-gray-300 shadow-sm"
+            className={`${nodeStyles.actionButton()} hover:bg-red-500/20`}
             title="Delete"
           >
             <svg
-              className="w-4 h-4 text-red-500"
+              className={`${iconStyles} text-red-500`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -85,12 +87,9 @@ function EventNode({ data }: NodeProps<EventNodeData>) {
       </div>
 
       <div className="space-y-2">
-        <div className="font-bold text-gray-900">{data.title}</div>
-
+        <div className={nodeStyles.header()}>{data.title}</div>
         {data.description && (
-          <div className="text-sm text-gray-600 line-clamp-2">
-            {data.description}
-          </div>
+          <div className={nodeStyles.description()}>{data.description}</div>
         )}
       </div>
 
@@ -103,4 +102,4 @@ function EventNode({ data }: NodeProps<EventNodeData>) {
   );
 }
 
-export default EventNode
+export default EventNode;

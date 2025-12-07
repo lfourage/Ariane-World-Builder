@@ -1,36 +1,92 @@
 "use client";
-import { input } from "@lib/tv/input";
+import { useState, useRef, useEffect, FormEvent } from "react";
+import { modal } from "@lib/tv/modal";
+import { formField, textarea } from "@lib/tv/form";
 import { button } from "@lib/tv/button";
-import { FormEvent, useState } from "react";
+import { icon } from "@lib/tv/icon";
 
 interface EventFormModalProps {
-  isOpen: boolean;
   eventId?: string | null;
   initialData?: {
     title: string;
     description?: string;
-  }
+  };
   pos: {
     x: number;
     y: number;
   };
-  addNode: (label: string) => void;
+  addNode: (title: string, description?: string) => void;
   closeModal: () => void;
 }
 
 export default function EventFormModal({
-  isOpen,
   pos,
   addNode,
   closeModal,
 }: EventFormModalProps) {
-  const [label, setLabel] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [adjustedPos, setAdjustedPos] = useState(pos);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const modalStyles = modal({ size: "sm" });
+  const fieldStyles = formField({ size: "sm" });
+  const iconStyles = icon({ size: "sm" });
+
+  useEffect(() => {
+    const adjustPosition = () => {
+      if (formRef.current) {
+        const rect = formRef.current.getBoundingClientRect();
+        const isMobile = window.innerWidth < 640 || window.innerHeight < 500;
+
+        if (isMobile) {
+          setAdjustedPos({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+          });
+          return;
+        }
+
+        const padding = 20;
+        let newX = pos.x;
+        let newY = pos.y;
+
+        const modalHalfWidth = rect.width / 2;
+        const modalHalfHeight = rect.height / 2;
+
+        const leftEdge = newX - modalHalfWidth;
+        const rightEdge = newX + modalHalfWidth;
+
+        if (leftEdge < padding) {
+          newX = modalHalfWidth + padding;
+        } else if (rightEdge > window.innerWidth - padding) {
+          newX = window.innerWidth - modalHalfWidth - padding;
+        }
+
+        const topEdge = newY - modalHalfHeight;
+        const bottomEdge = newY + modalHalfHeight;
+
+        if (topEdge < padding) {
+          newY = modalHalfHeight + padding;
+        } else if (bottomEdge > window.innerHeight - padding) {
+          newY = window.innerHeight - modalHalfHeight - padding;
+        }
+
+        setAdjustedPos({ x: newX, y: newY });
+      }
+    };
+
+    adjustPosition();
+
+    const timer = setTimeout(adjustPosition, 10);
+
+    return () => clearTimeout(timer);
+  }, [pos]);
 
   const handleSubmit = (e: FormEvent | null = null) => {
     e?.preventDefault();
-    if (label.trim()) {
-      addNode(label);
+    if (title.trim()) {
+      addNode(title, description);
       closeModal();
     }
   };
@@ -45,47 +101,87 @@ export default function EventFormModal({
 
   return (
     <>
-      <div
-        className="fixed inset-0 bg-black bg-opacity-0 flex items-center justify-center"
-        onClick={closeModal}
-      />
+      <div className={modalStyles.overlay()} onClick={closeModal} />
+
       <form
+        ref={formRef}
         onSubmit={handleSubmit}
-        className="absolute bg-white text-gray-900 p-5 rounded-xl shadow-2xl border border-gray-300"
+        className={modalStyles.container()}
         style={{
           position: "absolute",
-          left: `${pos.x}px`,
-          top: `${pos.y}px`,
+          left: `${adjustedPos.x}px`,
+          top: `${adjustedPos.y}px`,
           transform: "translate(-50%, -50%)",
         }}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
       >
-        <label htmlFor="eventTitle">Title</label>
-        <input
-          type="text"
-          id="eventTitle"
-          className={input()}
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-          autoFocus
-        />
+        <div className={modalStyles.header()}>
+          <h2 className={modalStyles.title()}>New event</h2>
+          <button
+            type="button"
+            onClick={closeModal}
+            className={modalStyles.closeButton()}
+          >
+            <svg
+              className={iconStyles}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
 
-        <label htmlFor="eventDescription">Description</label>
-        <input
-          type="text"
-          id="eventDescription"
-          className={input()}
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <div className={modalStyles.content()}>
+          <div className={fieldStyles.wrapper()}>
+            <label htmlFor="eventTitle" className={fieldStyles.label()}>
+              Title
+            </label>
+            <input
+              type="text"
+              id="eventTitle"
+              className={fieldStyles.input()}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              autoFocus
+            />
+          </div>
 
-        <button
-          className={button({ intent: "nature", size: "md" })}
-          type="submit"
-        >
-          Submit
-        </button>
+          <div className={fieldStyles.wrapper()}>
+            <label htmlFor="eventDescription" className={fieldStyles.label()}>
+              Description
+            </label>
+            <textarea
+              id="eventDescription"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              className={textarea({ size: "sm" })}
+              placeholder="Describe the event..."
+            />
+          </div>
+        </div>
+
+        <div className={modalStyles.footer()}>
+          <button
+            type="submit"
+            disabled={!title.trim()}
+            className={button({
+              intent: "nature",
+              size: "md",
+              fullWidth: true,
+            })}
+          >
+            Create
+          </button>
+        </div>
       </form>
     </>
   );

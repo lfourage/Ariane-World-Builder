@@ -2,7 +2,7 @@ import { tv } from "tailwind-variants";
 
 export const flowNode = tv({
   slots: {
-    container: "shadow-lg rounded-lg border-2 relative",
+    container: "shadow-lg rounded-lg border-2 relative transition-all duration-200",
     header: "font-bold",
     description: "text-sm line-clamp-2",
     actions: "absolute top-2 right-2 flex gap-1 transition-opacity z-10",
@@ -52,6 +52,14 @@ export const flowNode = tv({
         container: "px-5 py-4 min-w-[250px] max-w-[400px]",
       },
     },
+    selected: {
+      true: {
+        container: "bg-gray-300 ring-2 ring-green-400 ring-offset-2 ring-offset-black",
+      },
+      false: {
+        container: "bg-gray-200",
+      },
+    }
   },
   defaultVariants: {
     variant: "default",

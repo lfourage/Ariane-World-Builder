@@ -1,31 +1,33 @@
 "use client";
-import { useState, useRef, useEffect, FormEvent } from "react";
+import { FormEvent, useState, useEffect, useRef } from "react";
 import { modal } from "@lib/tv/modal";
 import { formField, textarea } from "@lib/tv/form";
 import { button } from "@lib/tv/button";
 import { icon } from "@lib/tv/icon";
+import { EventNodeData } from "./EventNode";
 
 interface EventFormModalProps {
   eventId?: string | null;
-  initialData?: {
-    title: string;
-    description?: string;
-  };
+  initialData?: EventNodeData
   pos: {
     x: number;
     y: number;
   };
   addNode: (title: string, description?: string) => void;
+  updateNode?: (id: string, title: string, description?: string) => void;
   closeModal: () => void;
 }
 
 export default function EventFormModal({
+  eventId,
+  initialData,
   pos,
   addNode,
+  updateNode,
   closeModal,
 }: EventFormModalProps) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [description, setDescription] = useState(initialData?.description || "");
   const [adjustedPos, setAdjustedPos] = useState(pos);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -34,15 +36,21 @@ export default function EventFormModal({
   const iconStyles = icon({ size: "sm" });
 
   useEffect(() => {
+    setTitle(initialData?.title || "");
+    setDescription(initialData?.description || "");
+  }, [initialData]);
+
+  useEffect(() => {
     const adjustPosition = () => {
       if (formRef.current) {
         const rect = formRef.current.getBoundingClientRect();
-        const isMobile = window.innerWidth < 640 || window.innerHeight < 500;
-
+        const isMobile = window.innerWidth < 640 || window.innerHeight < 500 || 
+                        ('ontouchstart' in window);
+        
         if (isMobile) {
           setAdjustedPos({
             x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
+            y: Math.min(window.innerHeight / 2, rect.height / 2 + 20),
           });
           return;
         }
@@ -56,7 +64,7 @@ export default function EventFormModal({
 
         const leftEdge = newX - modalHalfWidth;
         const rightEdge = newX + modalHalfWidth;
-
+        
         if (leftEdge < padding) {
           newX = modalHalfWidth + padding;
         } else if (rightEdge > window.innerWidth - padding) {
@@ -65,7 +73,7 @@ export default function EventFormModal({
 
         const topEdge = newY - modalHalfHeight;
         const bottomEdge = newY + modalHalfHeight;
-
+        
         if (topEdge < padding) {
           newY = modalHalfHeight + padding;
         } else if (bottomEdge > window.innerHeight - padding) {
@@ -77,32 +85,41 @@ export default function EventFormModal({
     };
 
     adjustPosition();
-
     const timer = setTimeout(adjustPosition, 10);
-
+    
     return () => clearTimeout(timer);
   }, [pos]);
 
   const handleSubmit = (e: FormEvent | null = null) => {
     e?.preventDefault();
     if (title.trim()) {
-      addNode(title, description);
+      if (eventId && updateNode) {
+        updateNode(eventId, title, description);
+      } 
+      else {
+        addNode(title, description);
+      }
       closeModal();
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && e.ctrlKey) {
       handleSubmit();
     } else if (e.key === "Escape") {
       closeModal();
     }
   };
 
+  const isEditMode = !!eventId;
+
   return (
     <>
-      <div className={modalStyles.overlay()} onClick={closeModal} />
-
+      <div
+        className={modalStyles.overlay()}
+        onClick={closeModal}
+      />
+      
       <form
         ref={formRef}
         onSubmit={handleSubmit}
@@ -117,24 +134,16 @@ export default function EventFormModal({
         onKeyDown={handleKeyDown}
       >
         <div className={modalStyles.header()}>
-          <h2 className={modalStyles.title()}>New event</h2>
+          <h2 className={modalStyles.title()}>
+            {isEditMode ? "Edit event" : "New event"}
+          </h2>
           <button
             type="button"
             onClick={closeModal}
             className={modalStyles.closeButton()}
           >
-            <svg
-              className={iconStyles}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
+            <svg className={iconStyles} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
@@ -150,6 +159,8 @@ export default function EventFormModal({
               className={fieldStyles.input()}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              placeholder="Give a title to your event..."
+              maxLength={20}
               autoFocus
             />
           </div>
@@ -171,15 +182,11 @@ export default function EventFormModal({
 
         <div className={modalStyles.footer()}>
           <button
+            className={button({ intent: "nature", size: "md", fullWidth: true })}
             type="submit"
             disabled={!title.trim()}
-            className={button({
-              intent: "nature",
-              size: "md",
-              fullWidth: true,
-            })}
           >
-            Create
+            {isEditMode ? "Update" : "Create"}
           </button>
         </div>
       </form>

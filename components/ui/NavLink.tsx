@@ -57,7 +57,6 @@ export const NavLink = ({ type, href, label, onClick }: NavLinkProps) => {
     );
   }
 
-  // Regular navigation links
   if (href && label) {
     const isActive = pathname === href;
     

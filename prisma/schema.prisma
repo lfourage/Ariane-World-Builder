@@ -1,33 +1,39 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+model World {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  events Event[]
 }
 
 model Event {
-  id        String            @id @default(cuid())
-  data      Json
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt
-  nexts     EventConnection[] @relation("prevEvent")
-  prevs     EventConnection[] @relation("nextEvent")
+  id          String            @id @default(cuid())
+  title       String
+  description String?
+  positionX   Float             @default(0)
+  positionY   Float             @default(0)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  nexts       EventConnection[] @relation("prevEvent")
+  prevs       EventConnection[] @relation("nextEvent")
 
-  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author   User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
-}
-
-enum ConnectionType {
-  LINEAR
-  TIMETRAVEL
+  world    World?  @relation(fields: [worldId], references: [id], onDelete: Cascade)
+  worldId  String?
 }
 
 model EventConnection {
-  id    String         @id @default(cuid())
-  order Int            @default(0)
-  type  ConnectionType @default(LINEAR)
+  id    String @id @default(cuid())
+  order Int    @default(0)
 
   next   Event?  @relation("nextEvent", fields: [nextId], references: [id])
   prev   Event?  @relation("prevEvent", fields: [prevId], references: [id])
@@ -39,20 +45,19 @@ model EventConnection {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
   password      String
-  email         String          @unique
+  email         String    @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  // Optional for WebAuthn support
-  Authenticator Authenticator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Event     Event[]
+  worlds    World[]
+  events    Event[]
 }
 
 model Account {
@@ -92,20 +97,4 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
-}
-
-// Optional for WebAuthn support
-model Authenticator {
-  credentialID         String  @unique
-  userId               String
-  providerAccountId    String
-  credentialPublicKey  String
-  counter              Int
-  credentialDeviceType String
-  credentialBackedUp   Boolean
-  transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([userId, credentialID])
 }

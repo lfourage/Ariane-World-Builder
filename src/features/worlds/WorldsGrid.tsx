@@ -1,6 +1,6 @@
 import { worldcard } from "@styles";
 import { WorldCard } from "./WorldCard";
-import type { World } from "@hooks/worlds";
+import type { World } from "@hooks";
 
 interface WorldsGridProps {
   worlds: World[];

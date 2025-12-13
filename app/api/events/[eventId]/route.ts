@@ -1,6 +1,6 @@
 import { withApi } from "@api/withApi";
 import { ApiResponse } from "@utils/response";
-import { NotFoundError, ForbiddenError } from "@lib/errors/AppError";
+import { NotFoundError, ForbiddenError } from "@lib/errors/ApiError";
 import { prisma } from "@lib/db/prisma";
 import { updateEventSchema } from "@schemas/eventSchema";
 

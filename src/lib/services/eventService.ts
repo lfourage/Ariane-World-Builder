@@ -40,8 +40,6 @@ export async function saveWorldSchema(
 
   // Use transaction to ensure atomicity
   await prisma.$transaction(async (tx) => {
-    // Delete all existing events and connections for this world
-    // (Cascade will handle EventConnections)
     await tx.event.deleteMany({
       where: { worldId },
     });
@@ -124,7 +122,7 @@ export async function updateEvent(
     include: { world: true },
   });
 
-  if (!event || event.world.userId !== userId) {
+  if (!event || event.world?.userId !== userId) {
     throw new Error("Unauthorized or event not found");
   }
 
@@ -145,7 +143,7 @@ export async function deleteEvent(eventId: string, userId: string): Promise<void
     include: { world: true },
   });
 
-  if (!event || event.world.userId !== userId) {
+  if (!event || event.world?.userId !== userId) {
     throw new Error("Unauthorized or event not found");
   }
 

@@ -17,7 +17,7 @@ export interface WorldWithEvents {
   createdAt: Date;
   updatedAt: Date;
   userId: string;
-  events: any[];
+  events?: any[];
   _count?: {
     events: number;
   };

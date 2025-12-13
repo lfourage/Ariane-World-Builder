@@ -1,11 +1,11 @@
-export class AppError extends Error {
+export class ApiError extends Error {
   constructor(
     message: string,
     public status: number = 400,
     public code?: string
   ) {
     super(message);
-    this.name = "AppError";
+    this.name = "ApiError";
     Error.captureStackTrace(this, this.constructor);
   }
 
@@ -19,25 +19,25 @@ export class AppError extends Error {
   }
 }
 
-export class UnauthorizedError extends AppError {
+export class UnauthorizedError extends ApiError {
   constructor(message = "Unauthorized") {
     super(message, 401, "UNAUTHORIZED");
   }
 }
 
-export class ForbiddenError extends AppError {
+export class ForbiddenError extends ApiError {
   constructor(message = "Forbidden") {
     super(message, 403, "FORBIDDEN");
   }
 }
 
-export class NotFoundError extends AppError {
+export class NotFoundError extends ApiError {
   constructor(message = "Resource not found") {
     super(message, 404, "NOT_FOUND");
   }
 }
 
-export class ValidationError extends AppError {
+export class ValidationError extends ApiError {
   constructor(
     message = "Validation failed",
     public details?: any

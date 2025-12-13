@@ -16,7 +16,6 @@ import {
   useFlowInitializer,
   useContextMenu,
   useSelection,
-  useMediaQuery,
   useViewportCenter,
 } from "@hooks";
 
@@ -36,7 +35,6 @@ interface SchematizerPageProps {
 
 function FlowInner({ worldId }: SchematizerPageProps) {
   const router = useRouter();
-  const isPortrait = useMediaQuery("(orientation: portrait)");
 
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,13 +57,10 @@ function FlowInner({ worldId }: SchematizerPageProps) {
   const { getViewportCenter } = useViewportCenter();
 
   // Event handlers for nodes
-  const handleEdit = useCallback(
-    (node: EventFlowNode) => {
-      setEditingNode(node);
-      setIsModalOpen(true);
-    },
-    [isPortrait]
-  );
+  const handleEdit = useCallback((node: EventFlowNode) => {
+    setEditingNode(node);
+    setIsModalOpen(true);
+  }, []);
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -96,14 +91,11 @@ function FlowInner({ worldId }: SchematizerPageProps) {
   });
 
   // Open modal for creating/editing
-  const handleOpenModal = useCallback(
-    (position: XYPosition, node?: EventFlowNode) => {
-      setEditingNode(node || null);
-      setPendingNodeFlowPos(position);
-      setIsModalOpen(true);
-    },
-    [isPortrait]
-  );
+  const handleOpenModal = useCallback((position: XYPosition, node?: EventFlowNode) => {
+    setEditingNode(node || null);
+    setPendingNodeFlowPos(position);
+    setIsModalOpen(true);
+  }, []);
 
   // ReactFlow event handlers
   const flowHandlers = useFlowHandlers({
@@ -317,12 +309,7 @@ function FlowInner({ worldId }: SchematizerPageProps) {
       <HelpButton />
 
       {/* Toolbar */}
-      <FlowToolbar
-        onSave={handleSave}
-        onBack={() => router.push("/worlds")}
-        isSaving={isSaving}
-        showUndoRedo={false}
-      />
+      <FlowToolbar onSave={handleSave} onBack={() => router.push("/worlds")} isSaving={isSaving} />
 
       {/* ReactFlow Canvas */}
       <FlowCanvas

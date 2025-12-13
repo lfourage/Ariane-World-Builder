@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ValidationError } from "@lib/errors/AppError";
+import { ValidationError } from "@lib/errors/ApiError";
 import type { Middleware } from "@lib/types/api";
 
 export const withValidation = (schemas: {

@@ -3,23 +3,13 @@ import { button } from "@styles";
 interface FlowToolbarProps {
   onSave: () => void;
   onBack: () => void;
-  onUndo?: () => void;
-  onRedo?: () => void;
-  canUndo?: boolean;
-  canRedo?: boolean;
   isSaving: boolean;
-  showUndoRedo?: boolean;
 }
 
 export function FlowToolbar({
   onSave,
   onBack,
-  onUndo,
-  onRedo,
-  canUndo = false,
-  canRedo = false,
   isSaving,
-  showUndoRedo = false,
 }: FlowToolbarProps) {
   return (
     <div className="absolute top-20 right-4 z-10 flex gap-2">

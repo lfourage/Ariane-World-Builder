@@ -1,9 +1,9 @@
 import { ZodError } from "zod";
 import { Prisma } from "@prisma/client";
-import { AppError, ValidationError } from "@lib/errors/AppError";
+import { ApiError, ValidationError } from "@lib/errors/ApiError";
 
 export function parseError(err: unknown) {
-  if (err instanceof AppError) {
+  if (err instanceof ApiError) {
     return {
       success: false,
       error: {
@@ -22,7 +22,7 @@ export function parseError(err: unknown) {
         code: "VALIDATION_ERROR",
         message: "Invalid request data",
         status: 422,
-        details: err.errors.map((e) => ({
+        details: err.issues.map((e) => ({
           path: e.path.join("."),
           message: e.message,
         })),

@@ -1,6 +1,6 @@
 import { withApi } from "@api/withApi";
 import { ApiResponse } from "@utils/response";
-import { AppError } from "@lib/errors/AppError";
+import { ApiError } from "@lib/errors/ApiError";
 import { registerSchema } from "@schemas/userSchema";
 import { registerUser, getUserById } from "@services/userService";
 
@@ -20,7 +20,7 @@ export const POST = withApi(async ({ req }) => {
     return ApiResponse.created(user);
   } catch (error) {
     if (error instanceof Error && error.message.includes("already exists")) {
-      throw new AppError("User already exists", 409, "USER_EXISTS");
+      throw new ApiError("User already exists", 409, "USER_EXISTS");
     }
     throw error;
   }

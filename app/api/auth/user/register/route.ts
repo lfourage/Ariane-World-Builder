@@ -1,20 +1,27 @@
-export const runtime = "nodejs";
-
-import { NextRequest, NextResponse } from "next/server";
-import { withErrorHandler } from "@utils/withErrorHandler";
+import { withApi } from "@api/withApi";
+import { ApiResponse } from "@utils/response";
+import { AppError } from "@lib/errors/AppError";
 import { registerSchema } from "@schemas/userSchema";
-import { registerUser } from "@services/userService";
+import { registerUser, getUserById } from "@services/userService";
 
-async function handler(req: NextRequest) {
+export const POST = withApi(async ({ req }) => {
   const body = await req.json();
-  const parsed = registerSchema.parse(body);
+  const data = registerSchema.parse(body);
 
-  const userId = await registerUser(parsed);
+  try {
+    const userId = await registerUser({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    });
 
-  return NextResponse.json(
-    { message: "User created", userId },
-    { status: 201 }
-  );
-}
+    const user = await getUserById(userId);
 
-export const POST = withErrorHandler(handler);
+    return ApiResponse.created(user);
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("already exists")) {
+      throw new AppError("User already exists", 409, "USER_EXISTS");
+    }
+    throw error;
+  }
+});

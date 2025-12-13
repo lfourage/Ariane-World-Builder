@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import { Providers } from "@components/Providers";
-import "@styles";
+import "@app/styles/globals.css";
 
 export const metadata: Metadata = {
   title: "Ariane World Builder",
   description: "Toolbox for world building",
+  icons: {
+    icon: "/BobinIcon.png",
+    apple: "/BobinIcon.png",
+  },
 };
 
 export default function RootLayout({
@@ -15,9 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="h-screen overflow-hidden">
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

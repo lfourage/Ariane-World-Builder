@@ -17,15 +17,17 @@
     "types": ["node", "next", "next-auth"],
     "paths": {
       "@app/*": ["app/*"],
-      "@styles": ["app/styles/globals.css"],
-      "@components/*": ["components/*"],
-      "@lib/*": ["lib/*"],
-      "@db": ["lib/db/prisma"],
-      "@schemas/*": ["lib/schemas/*"],
-      "@services/*": ["lib/services/*"],
-      "@types/*": ["lib/types/*"],
-      "@tv/*": ["lib/tv/*"],
-      "@utils/*": ["lib/utils/*"]
+      "@components/*": ["src/components/*"],
+      "@ui/*": ["src/components/ui/*"],
+      "@features/*": ["src/features/*"],
+      "@lib/*": ["src/lib/*"],
+      "@api/*": ["src/lib/api/*"],
+      "@services/*": ["src/lib/services/*"],
+      "@schemas/*": ["src/lib/schemas/*"],
+      "@utils/*": ["src/lib/utils/*"],
+      "@hooks": ["src/hooks"],
+      "@types": ["src/lib/types"],
+      "@styles": ["src/styles/variants"]
     },
     "plugins": [
       {
@@ -33,12 +35,6 @@
       }
     ]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "types"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

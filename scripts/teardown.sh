@@ -1,20 +1,44 @@
 #!/bin/bash
-
 set -e
 
-echo "🛑 Stopping Docker containers..."
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+echo -e "${BLUE}🛑 Stopping Docker containers...${NC}"
 docker compose down -v --remove-orphans
 
-echo "🧹 Cleaning build and database artifacts..."
-rm -rf prisma/migrations
-rm -rf .next
-rm -rf node_modules
-rm -f package-lock.json
+echo -e "\n${BLUE}🧹 Cleaning artifacts...${NC}"
 
-read -p "❓ Do you want to delete the .env file? (y/N): " confirm
-if [[ "$confirm" == "y" || "$confirm" == "Y" ]]; then
-    rm -f .env
-    echo "🗑️ .env file deleted."
+# Always safe to clean
+rm -rf .next
+echo -e "${GREEN}  ✓ Removed .next${NC}"
+
+# Ask before cleaning migrations (data loss)
+echo -e "${YELLOW}Delete prisma/migrations? This will require re-running migrations.${NC}"
+read -p "(y/N): " confirm_migrations
+if [[ "$confirm_migrations" == "y" || "$confirm_migrations" == "Y" ]]; then
+    rm -rf prisma/migrations
+    echo -e "${GREEN}  ✓ Removed prisma/migrations${NC}"
 fi
 
-echo "✅ Teardown complete. You're back to a clean state."
+# Ask before cleaning node_modules (slow to reinstall)
+echo -e "${YELLOW}Delete node_modules? This requires npm install.${NC}"
+read -p "(y/N): " confirm_node
+if [[ "$confirm_node" == "y" || "$confirm_node" == "Y" ]]; then
+    rm -rf node_modules
+    echo -e "${GREEN}  ✓ Removed node_modules${NC}"
+fi
+
+# Ask before deleting .env
+echo -e "${YELLOW}Delete .env file?${NC}"
+read -p "(y/N): " confirm_env
+if [[ "$confirm_env" == "y" || "$confirm_env" == "Y" ]]; then
+    rm -f .env
+    echo -e "${GREEN}  ✓ Removed .env${NC}"
+fi
+
+echo -e "\n${GREEN}✅ Teardown complete!${NC}"

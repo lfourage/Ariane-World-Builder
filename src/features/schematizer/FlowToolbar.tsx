@@ -6,14 +6,9 @@ interface FlowToolbarProps {
   isSaving: boolean;
 }
 
-export function FlowToolbar({
-  onSave,
-  onBack,
-  isSaving,
-}: FlowToolbarProps) {
+export function FlowToolbar({ onSave, onBack, isSaving }: FlowToolbarProps) {
   return (
     <div className="absolute top-20 right-4 z-10 flex gap-2">
-
       {/* Back to Worlds */}
       <button
         onClick={onBack}

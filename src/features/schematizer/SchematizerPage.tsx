@@ -259,20 +259,12 @@ function FlowInner({ worldId }: SchematizerPageProps) {
     return [];
   }, [contextMenu, selection, handleEdit, flowActions, handleOpenModal, handleSave]);
 
-  // Keyboard shortcuts (including Ctrl+S for save)
+  // Keyboard shortcuts
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      // Save shortcut
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-        handleSave();
-        return;
-      }
-
-      // Delete key handled by flowHandlers.onKeyDown
       flowHandlers.onKeyDown(e);
     },
-    [handleSave, flowHandlers]
+    [flowHandlers]
   );
 
   // Apply selection state to nodes and edges for visual feedback

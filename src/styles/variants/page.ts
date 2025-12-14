@@ -20,10 +20,5 @@ export const hero = tv({
     logo: "flex justify-center",
     title: "text-4xl sm:text-5xl font-bold text-white mb-4",
     subtitle: "text-xl text-gray-300 mb-8",
-    features: "grid grid-cols-1 md:grid-cols-3 gap-6 mt-12",
-    feature: "bg-gray-800/50 p-6 rounded-lg",
-    featureIcon: "text-4xl mb-4",
-    featureTitle: "text-lg font-semibold text-white mb-2",
-    featureDescription: "text-gray-400",
   },
 });

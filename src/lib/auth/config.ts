@@ -17,7 +17,6 @@ export const authConfig = {
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
-        // Use userService to verify password
         const user = await verifyPassword(parsed.data.email, parsed.data.password);
 
         if (!user) return null;

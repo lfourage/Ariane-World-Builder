@@ -8,7 +8,6 @@ export const withValidation = (schemas: {
   params?: z.ZodSchema;
 }): Middleware => {
   return async (ctx, next) => {
-    // Valider le body
     if (schemas.body) {
       const body = await ctx.req.json().catch(() => ({}));
       const result = schemas.body.safeParse(body);
@@ -20,7 +19,6 @@ export const withValidation = (schemas: {
       (ctx as any).body = result.data;
     }
 
-    // Valider la query
     if (schemas.query) {
       const url = new URL(ctx.req.url);
       const query = Object.fromEntries(url.searchParams);
@@ -33,7 +31,6 @@ export const withValidation = (schemas: {
       (ctx as any).query = result.data;
     }
 
-    // Valider les params
     if (schemas.params && ctx.params) {
       const result = schemas.params.safeParse(ctx.params);
 

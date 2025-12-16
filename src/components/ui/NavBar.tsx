@@ -37,6 +37,7 @@ export function Navbar() {
               width={32}
               height={32}
               className={styles.logoIcon()}
+              priority
             />
             <span className={styles.logoText()}>Ariane World Builder</span>
           </Link>

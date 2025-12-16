@@ -1,6 +1,6 @@
 import { withApi } from "@api/withApi";
 import { ApiResponse } from "@utils/response";
-import { saveWorldSchema } from "@services/eventService";
+import { saveWorld } from "@services/worldService";
 import { z } from "zod";
 
 const saveSchematizerSchema = z.object({
@@ -28,7 +28,7 @@ export const PUT = withApi(
 
     const data = saveSchematizerSchema.parse(body);
 
-    await saveWorldSchema(params!.worldId, user!.id, data);
+    await saveWorld(params!.worldId, user!.id, data);
 
     return ApiResponse.json({ message: "World saved successfully" });
   },

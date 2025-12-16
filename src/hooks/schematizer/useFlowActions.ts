@@ -1,4 +1,4 @@
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import type { Edge } from "@xyflow/react";
 import type { EventFlowNode } from "@lib/types";
 
@@ -17,8 +17,11 @@ interface UseFlowActionsProps {
   removeEdge: (id: string) => void;
 }
 
+function generateNodeId(): string {
+  return crypto.randomUUID();
+}
+
 export function useFlowActions({
-  nodes,
   setNodes,
   setEdges,
   onEdit,
@@ -29,25 +32,15 @@ export function useFlowActions({
   removeNode,
   removeEdge,
 }: UseFlowActionsProps) {
-  const nodeCountRef = useRef(1);
-
-  // Initialize node count from existing nodes
-  const initNodeCount = () => {
-    if (nodes.length > 0) {
-      const maxId = Math.max(...nodes.map((n) => parseInt(n.id.slice(1)) || 0));
-      nodeCountRef.current = maxId + 1;
-    }
-  };
-
-  // Add new node
+  // Add new node with unique UUID
   const addNode = useCallback(
     (title: string, description: string | undefined, position: { x: number; y: number }) => {
       const newNode: EventFlowNode = {
-        id: `n${nodeCountRef.current}`,
+        id: generateNodeId(), // ← UUID au lieu de n1, n2, n3...
         type: "eventNode",
         position,
         data: {
-          title: title || `Node ${nodeCountRef.current}`,
+          title: title || "New Event",
           description,
           selected: false,
           onEdit,
@@ -56,7 +49,6 @@ export function useFlowActions({
       };
 
       setNodes((prevNodes) => [...prevNodes, newNode]);
-      nodeCountRef.current++;
     },
     [setNodes, onEdit, onDelete]
   );
@@ -140,6 +132,5 @@ export function useFlowActions({
     deleteNode,
     deleteEdge,
     deleteSelection,
-    initNodeCount,
   };
 }

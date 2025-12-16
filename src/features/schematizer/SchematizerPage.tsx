@@ -117,7 +117,6 @@ function FlowInner({ worldId }: SchematizerPageProps) {
     loadWorld,
     setNodes: flowState.setNodes,
     setEdges: flowState.setEdges,
-    initNodeCount: flowActions.initNodeCount,
     onEdit: handleEdit,
     onDelete: handleDelete,
   });

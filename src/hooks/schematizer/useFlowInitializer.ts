@@ -19,7 +19,6 @@ interface UseFlowInitializerProps {
   loadWorld: () => Promise<WorldData | null>;
   setNodes: React.Dispatch<React.SetStateAction<EventFlowNode[]>>;
   setEdges: React.Dispatch<React.SetStateAction<Edge[]>>;
-  initNodeCount: () => void;
   onEdit: (node: EventFlowNode) => void;
   onDelete: (id: string) => void;
 }
@@ -28,21 +27,18 @@ export function useFlowInitializer({
   loadWorld,
   setNodes,
   setEdges,
-  initNodeCount,
   onEdit,
   onDelete,
 }: UseFlowInitializerProps) {
   // Use refs to store callbacks without triggering re-initialization
   const onEditRef = useRef(onEdit);
   const onDeleteRef = useRef(onDelete);
-  const initNodeCountRef = useRef(initNodeCount);
 
   // Update refs when callbacks change
   useEffect(() => {
     onEditRef.current = onEdit;
     onDeleteRef.current = onDelete;
-    initNodeCountRef.current = initNodeCount;
-  }, [onEdit, onDelete, initNodeCount]);
+  }, [onEdit, onDelete]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -83,18 +79,8 @@ export function useFlowInitializer({
 
       setNodes(loadedNodes);
       setEdges(loadedEdges);
-
-      // Update nodeCount to avoid ID conflicts - must be called AFTER setNodes
-      if (loadedNodes.length > 0) {
-        // Small delay to ensure nodes are set before calling initNodeCount
-        setTimeout(() => {
-          initNodeCountRef.current();
-        }, 0);
-      }
     };
 
     initialize();
-    // Only re-initialize if loadWorld changes (i.e., worldId changes)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadWorld]);
+  }, [loadWorld, setEdges, setNodes]);
 }

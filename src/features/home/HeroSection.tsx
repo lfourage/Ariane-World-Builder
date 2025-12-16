@@ -13,6 +13,7 @@ export function HeroSection() {
           width={80}
           height={80}
           className="w-20 h-20"
+          priority
         />
       </div>
       <h1 className={styles.title()}>Ariane World Builder</h1>

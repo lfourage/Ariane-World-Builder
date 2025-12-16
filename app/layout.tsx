@@ -6,7 +6,11 @@ export const metadata: Metadata = {
   title: "Ariane World Builder",
   description: "Toolbox for world building",
   icons: {
-    icon: "/BobinIcon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/BobinIcon.svg", type: "image/svg+xml" },
+      { url: "/BobinIcon.png", type: "image/png", sizes: "192x192" },
+    ],
     apple: "/BobinIcon.png",
   },
 };

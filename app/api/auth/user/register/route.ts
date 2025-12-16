@@ -2,7 +2,8 @@ import { withApi } from "@api/withApi";
 import { ApiResponse } from "@utils/response";
 import { ApiError } from "@lib/errors/ApiError";
 import { registerSchema } from "@schemas/userSchema";
-import { registerUser, getUserById } from "@services/userService";
+import { registerUser } from "@services/userService";
+import { prisma } from "@lib/db/prisma";
 
 export const POST = withApi(async ({ req }) => {
   const body = await req.json();
@@ -15,7 +16,15 @@ export const POST = withApi(async ({ req }) => {
       password: data.password,
     });
 
-    const user = await getUserById(userId);
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+      },
+    });
 
     return ApiResponse.created(user);
   } catch (error) {

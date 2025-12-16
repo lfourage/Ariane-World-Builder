@@ -36,7 +36,7 @@ export const PUT = withApi(
     auth: true,
     validate: {
       params: z.object({
-        worldId: z.string(),
+        worldId: z.cuid(),
       }),
     },
   }

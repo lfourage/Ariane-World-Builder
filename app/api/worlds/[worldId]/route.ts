@@ -33,7 +33,7 @@ export const GET = withApi(
     auth: true,
     validate: {
       params: z.object({
-        worldId: z.string(),
+        worldId: z.cuid(),
       }),
     },
   }
@@ -66,7 +66,7 @@ export const DELETE = withApi(
     auth: true,
     validate: {
       params: z.object({
-        worldId: z.string(),
+        worldId: z.cuid(),
       }),
     },
   }

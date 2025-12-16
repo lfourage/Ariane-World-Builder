@@ -59,6 +59,26 @@ export async function createWorld(input: CreateWorldInput): Promise<WorldObject>
 /**
  * Delete a world (cascade will delete events and connections)
  */
+export async function deleteWorld(worldId: string, userId: string): Promise<boolean> {
+  // Verify ownership
+  const world = await prisma.world.findUnique({
+    where: { id: worldId },
+  });
+
+  if (!world || world.userId !== userId) {
+    return false;
+  }
+
+  await prisma.world.delete({
+    where: { id: worldId },
+  });
+
+  return true;
+}
+
+/**
+ * update a world's events and connections
+ */
 export async function saveWorld(
   worldId: string,
   userId: string,

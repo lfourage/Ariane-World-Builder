@@ -36,7 +36,7 @@ export function useFlowActions({
   const addNode = useCallback(
     (title: string, description: string | undefined, position: { x: number; y: number }) => {
       const newNode: EventFlowNode = {
-        id: generateNodeId(), // ← UUID au lieu de n1, n2, n3...
+        id: generateNodeId(),
         type: "eventNode",
         position,
         data: {

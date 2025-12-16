@@ -3,7 +3,7 @@ import { ApiResponse } from "@utils/response";
 import { saveWorldSchema } from "@services/eventService";
 import { z } from "zod";
 
-const saveSchemaSchema = z.object({
+const saveSchematizerSchema = z.object({
   events: z.array(
     z.object({
       id: z.string(),
@@ -26,11 +26,11 @@ export const PUT = withApi(
   async ({ params, user, req }) => {
     const body = await req.json();
 
-    const data = saveSchemaSchema.parse(body);
+    const data = saveSchematizerSchema.parse(body);
 
     await saveWorldSchema(params!.worldId, user!.id, data);
 
-    return ApiResponse.json({ message: "Schema saved successfully" });
+    return ApiResponse.json({ message: "World saved successfully" });
   },
   {
     auth: true,

@@ -65,7 +65,7 @@ export function useWorldData(worldId: string) {
           order: index,
         }));
 
-        const res = await fetch(`/api/worlds/${worldId}/schema`, {
+        const res = await fetch(`/api/worlds/${worldId}/schematizer`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ events, connections }),
